@@ -9,6 +9,18 @@
 
 ---
 
+<p align="center">
+  <img src="docs/architecture.png" alt="The bug, side by side" width="100%">
+</p>
+
+### The bug, side by side
+
+`ecrecover` does not revert on invalid parameters — with a bad `v`, `r` or `s` it returns `address(0)`. A contract that trusts that value without checking it treats the zero address as a valid signer, and the authorisation check is bypassed. This repo holds the same contract twice: `SignatureAttacks` demonstrates the flaw with six tests, and `SecureSignatureContract` fixes it with a single `require(signer != address(0))`, proved by six more tests against the same attack.
+
+
+
+---
+
 ## 🎯 The vulnerability
 
 In Solidity, `ecrecover(hash, v, r, s)` is the standard way of recovering the signer of an Ethereum-signed message. But when given invalid parameters (bad `v`, `r`, or `s`), it **returns `address(0)` instead of reverting**.
